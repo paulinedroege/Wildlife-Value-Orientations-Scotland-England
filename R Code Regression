@@ -1,0 +1,62 @@
+library(nnet)
+library(dplyr)
+library(car)
+ukdata_subset$uk_country <- as.factor(ukdata_subset$uk_country)
+ukdata_subset$ageGroup <- as.factor(ukdata_subset$ageGroup)
+ukdata_subset$rural_urban <- as.factor(ukdata_subset$rural_urban)
+ukdata_subset$gender <- as.factor(ukdata_subset$gender)
+ukdata_subset$education <- as.factor(ukdata_subset$education)
+ukdata_subset$religion_importance <- as.factor(ukdata_subset$religion_importance)
+ukdata_subset$minority <- as.factor(ukdata_subset$minority)
+ukdata_subset$typology <- as.factor(ukdata_subset$typology)
+ukdata_subset$income <- as.factor(ukdata_subset$income)
+ukdata_subset <- ukdata %>% select(uk_country,ageGroup,rural_urban,gender,education,religion_importance,minority,income,typology)
+which(is.na(ukdata_subset), arr.ind = TRUE) #no missing values
+ukdata_subset <- ukdata_subset[-421, ] #remove odd response
+table(ukdata_subset$uk_country, ukdata_subset$ageGroup)
+table(ukdata_subset$uk_country, ukdata_subset$rural_urban)
+table(ukdata_subset$uk_country, ukdata_subset$gender)
+table(ukdata_subset$uk_country, ukdata_subset$education)
+table(ukdata_subset$uk_country, ukdata_subset$religion_importance)
+table(ukdata_subset$uk_country, ukdata_subset$minority)
+table(ukdata_subset$uk_country, ukdata_subset$typology)
+table(ukdata_subset$uk_country, ukdata_subset$income)
+which(ukdata_subset == 0, arr.ind = TRUE)
+library(forcats)
+ukdata_subset$education_collapsed <- fct_collapse(ukdata_subset$education,
+"Up to secondary education" = c("1","2","3"),
+"Post-secondary, not university" = "4",
+"University Bachelor degree" = "5",
+"Advanced university degree" = "6")
+table(ukdata_subset$education_collapsed)
+ukdata_subset$income_collapsed <- fct_collapse(ukdata_subset$income,
+"Lowest income" = c("1", "2"),
+"Lower income than average" = c("3", "4"),
+"Average income" = c("5", "6"),
+"Higher income than average" = c("7", "8"),
+"Highest income" = c("9", "10"))
+table(ukdata_subset$income_collapsed)
+multinom_regression <- multinom(typology ~ uk_country * (ageGroup + gender + rural_urban + education_collapsed + religion_importance + minority + income_collapsed), data=ukdata_subset)
+summary(multinom_regression)
+multinom_regression_2 <- multinom(typology ~ uk_country + ageGroup + gender + rural_urban + education_collapsed + religion_importance + minority + income_collapsed, data=ukdata_subset)
+summary(multinom_regression)
+#2-tailed z-test
+z <- summary(multinom_regression)$coefficients/summary(multinom_regression)$standard.errors
+p <- (1-pnorm(abs(z),0,1))*2
+p
+z <- summary(multinom_regression_2)$coefficients/summary(multinom_regression_2)$standard.errors
+p <- (1-pnorm(abs(z),0,1))*2
+p
+# Compute p-values
+p_values <- 2 * (1 - pnorm(abs(z)))
+p_values
+#Check assumptions
+X <- model.matrix(~ uk_country + ageGroup + gender + rural_urban + education + religion_importance + minority, data = ukdata_subset)[, -1]
+X_ukdata <- as.data.frame(X)
+vif_model <- lm(rep(1, nrow(X_ukdata)) ~ ., data = X_ukdata)
+vif(vif_model) #multicollinearity between education levels 3,4,5,6
+Likelihood Ratio Test
+null_model <- multinom(typology ~ 1, data = ukdata_subset)
+anova(null_model, multinom_regression, test = "Chisq") #model with predictors fits significantly better than the null model
+options(digits = 2)
+summary(multinom_regression_2)
