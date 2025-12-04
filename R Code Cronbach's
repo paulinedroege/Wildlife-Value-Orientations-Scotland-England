@@ -1,0 +1,5 @@
+alpha_domination <- psych::alpha(ukdata[, c("fish_wildlife_1", "fish_wildlife_10", "fish_wildlife_12", "fish_wildlife_15", "fish_wildlife_17", "fish_wildlife_24", "fish_wildlife_4", "fish_wildlife_7*", "fish_wildlife_19", "fish_wildlife_26*")], check.keys = TRUE)
+print(alpha_domination)
+
+alpha_mutualism <- psych::alpha(ukdata[, c("fish_wildlife_3", "fish_wildlife_5", "fish_wildlife_16", "fish_wildlife_21", "fish_wildlife_9", "fish_wildlife_11", "fish_wildlife_13", "fish_wildlife_18", "fish_wildlife_25")], check.keys = TRUE)
+print(alpha_mutualism)
