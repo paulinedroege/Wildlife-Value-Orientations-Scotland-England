@@ -1,0 +1,148 @@
+> lrt_1 <- anova(mod.1, mod.2)
+> lrt_1 <- lrt_1 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_1
+                  Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + ageGroup      2406    1662.73                              
+2 uk_country * ageGroup      2400    1659.53 1 vs 2     6      3.2    0.78
+> 
+> #with gender
+> mod.3 <- multinom(typology ~ uk_country + gender, ukdata_subset)
+# weights:  16 (9 variable)
+initial  value 1117.353255 
+iter  10 value 837.885535
+final  value 828.613963 
+converged
+> mod.4 <- multinom(typology ~ uk_country * gender, ukdata_subset)
+# weights:  20 (12 variable)
+initial  value 1117.353255 
+iter  10 value 832.200364
+final  value 826.769670 
+converged
+> lrt_2 <- anova(mod.3, mod.4)
+> lrt_2 <- lrt_2 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_2
+                Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + gender      2409    1657.23                              
+2 uk_country * gender      2406    1653.54 1 vs 2     3     3.69     0.3
+> 
+> #with rural/urban residence
+> mod.5 <- multinom(typology ~ uk_country + rural_urban, ukdata_subset)
+# weights:  16 (9 variable)
+initial  value 1117.353255 
+iter  10 value 840.531857
+final  value 837.561778 
+converged
+> mod.6 <- multinom(typology ~ uk_country * rural_urban, ukdata_subset)
+# weights:  20 (12 variable)
+initial  value 1117.353255 
+iter  10 value 839.251311
+final  value 836.671626 
+converged
+> lrt_3 <- anova(mod.5, mod.6)
+> lrt_3 <- lrt_3 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_3
+                     Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + rural_urban      2409    1675.12                              
+2 uk_country * rural_urban      2406    1673.34 1 vs 2     3     1.78    0.62
+> 
+> #with education level
+> mod.7 <- multinom(typology ~ uk_country +education_collapsed, ukdata_subset)
+# weights:  24 (15 variable)
+initial  value 1117.353255 
+iter  10 value 844.098594
+iter  20 value 835.479393
+final  value 835.477340 
+converged
+> mod.8 <- multinom(typology ~ uk_country *education_collapsed, ukdata_subset)
+# weights:  36 (24 variable)
+initial  value 1117.353255 
+iter  10 value 845.675736
+iter  20 value 828.356887
+final  value 828.346123 
+converged
+> anova(mod.7, mod.8)
+Likelihood ratio tests of Multinomial Models
+
+Response: typology
+                             Model Resid. df Resid. Dev   Test    Df LR stat.   Pr(Chi)
+1 uk_country + education_collapsed      2403   1670.955                                
+2 uk_country * education_collapsed      2394   1656.692 1 vs 2     9 14.26243 0.1132914
+> lrt_4 <- anova(mod.7, mod.8)
+> lrt_4 <- lrt_4 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_4
+                             Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + education_collapsed      2403    1670.95                              
+2 uk_country * education_collapsed      2394    1656.69 1 vs 2     9    14.26    0.11
+> 
+> #with religious importance
+> mod.9 <- multinom(typology ~ uk_country +religion_importance, ukdata_subset)
+# weights:  24 (15 variable)
+initial  value 1117.353255 
+iter  10 value 830.961491
+iter  20 value 815.419104
+final  value 815.407789 
+converged
+> mod.10 <- multinom(typology ~ uk_country *religion_importance, ukdata_subset)
+# weights:  36 (24 variable)
+initial  value 1117.353255 
+iter  10 value 828.433076
+iter  20 value 810.469027
+final  value 810.430745 
+converged
+> lrt_5 <- anova(mod.9, mod.10)
+> lrt_5 <- lrt_5 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_5
+                             Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + religion_importance      2403    1630.82                              
+2 uk_country * religion_importance      2394    1620.86 1 vs 2     9     9.95    0.35
+> 
+> #with minority
+> mod.11 <- multinom(typology ~ uk_country +minority, ukdata_subset)
+# weights:  16 (9 variable)
+initial  value 1117.353255 
+iter  10 value 828.197576
+final  value 827.270573 
+converged
+> mod.12 <- multinom(typology ~ uk_country *minority, ukdata_subset)
+# weights:  20 (12 variable)
+initial  value 1117.353255 
+iter  10 value 826.147118
+final  value 824.581163 
+converged
+> lrt_6 <- anova(mod.11,mod.12)
+> lrt_6 <- lrt_6 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_6
+                  Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + minority      2409    1654.54                              
+2 uk_country * minority      2406    1649.16 1 vs 2     3     5.38    0.15
+> 
+> #with income
+> mod.13 <- multinom(typology ~ uk_country +income_collapsed, ukdata_subset)
+# weights:  28 (18 variable)
+initial  value 1117.353255 
+iter  10 value 831.095534
+iter  20 value 814.113480
+final  value 814.112271 
+converged
+> mod.14 <- multinom(typology ~ uk_country *income_collapsed, ukdata_subset)
+# weights:  44 (30 variable)
+initial  value 1117.353255 
+iter  10 value 824.268457
+iter  20 value 806.762900
+iter  30 value 806.393755
+iter  40 value 806.370522
+final  value 806.370150 
+converged
+> anova(mod.13,mod.14)
+Likelihood ratio tests of Multinomial Models
+
+Response: typology
+                          Model Resid. df Resid. Dev   Test    Df LR stat.   Pr(Chi)
+1 uk_country + income_collapsed      2400   1628.225                                
+2 uk_country * income_collapsed      2388   1612.740 1 vs 2    12 15.48424 0.2160164
+> lrt_7 <- anova(mod.13,mod.14)
+> lrt_7 <- lrt_7 %>% mutate(across(where(is.numeric), ~ round(., 2)))
+> lrt_7
+                          Model Resid. df Resid. Dev   Test    Df LR stat. Pr(Chi)
+1 uk_country + income_collapsed      2400    1628.22                              
+2 uk_country * income_collapsed      2388    1612.74 1 vs 2    12    15.48    0.22
